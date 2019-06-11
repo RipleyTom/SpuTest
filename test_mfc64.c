@@ -35,17 +35,6 @@ int test_mfc64(CellSpurs2* spurs2, unsigned int num_spu, unsigned int num_ppu)
 
 	atomic_counter = 0;
 
-	sys_ppu_thread_t ppu_ids[num_ppu];
-	for (int index = 0; index < num_ppu; index ++)
-	{
-		ret = sys_ppu_thread_create(&ppu_ids[index], ppu_mfc64_entry, 0, 1000, 0x1000, SYS_PPU_THREAD_CREATE_JOINABLE, "PPU MFC 64 Bit");
-		if (ret != 0)
-		{
-			printf("Error sys_ppu_thread_create: 0x%x\n", ret);
-			return ret;
-		}
-	}
-
 	CellSpursTaskId tids[num_spu];
 	CellSpursTaskArgument args[num_spu];
 	void *ctx[num_spu];
@@ -58,6 +47,17 @@ int test_mfc64(CellSpurs2* spurs2, unsigned int num_spu, unsigned int num_ppu)
 		if (ret != 0)
 		{
 			printf("Error cellSpursCreateTask2WithBinInfo: 0x%x\n", ret);
+			return ret;
+		}
+	}
+
+	sys_ppu_thread_t ppu_ids[num_ppu];
+	for (int index = 0; index < num_ppu; index ++)
+	{
+		ret = sys_ppu_thread_create(&ppu_ids[index], ppu_mfc64_entry, 0, 1000, 0x1000, SYS_PPU_THREAD_CREATE_JOINABLE, "PPU MFC 64 Bit");
+		if (ret != 0)
+		{
+			printf("Error sys_ppu_thread_create: 0x%x\n", ret);
 			return ret;
 		}
 	}

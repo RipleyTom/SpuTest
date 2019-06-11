@@ -23,7 +23,7 @@ unsigned long long get_time()
 
 int main(int argc, char *argv[])
 {
-	printf("SPU Test v0.5 by GalCiv\n");
+	printf("SPU Test v0.5.2 by GalCiv\n");
 
 	unsigned int seed = 12345678;
 
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
 		return ret;
 	}
 	time2 = get_time();
-	printf("[SPU] PPU/SPU MFC 64 Bits War completed in %ums(PS3: 3928ms)\n", (time2 - time1));
+	printf("[SPU] PPU/SPU MFC 64 Bits War completed in %ums(PS3: 4443ms)\n", (time2 - time1));
 
 	//////////////////////////////////////////////////////////////////////////////////////
 
