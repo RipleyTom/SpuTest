@@ -4,7 +4,6 @@
 #include <sys/sys_time.h>
 #include <cell/spurs.h>
 #include "spurs_helpers.h"
-#include "test_sha512.h"
 #include "test_avalanche.h"
 #include "test_pingpong.h"
 #include "test_mfc64.h"
@@ -13,8 +12,8 @@
 
 bool verbose = false;
 
-#define DO_A_TEST(number, name, function, reference) \
-	if(verbose) printf("Test #%d: %s\n", number, name); \
+#define DO_A_TEST(name, function, reference) \
+	if(verbose) printf("Test #%d: %s\n", ++testnumber, name); \
 	time1 = get_time(); \
 	function; \
 	if (ret != 0) \
@@ -23,7 +22,7 @@ bool verbose = false;
 		return ret; \
 	} \
 	time2 = get_time(); \
-	printf("%s completed in %ums(PS3: %ums)\n", name, (time2 - time1), reference)
+	printf("%s completed in %u ms(PS3: %u ms)\n", name, (time2 - time1), reference)
 
 
 unsigned long long get_time()
@@ -84,45 +83,18 @@ int main(int argc, char *argv[])
 		return ret;
 	}
 
-	unsigned long long time1, time2;
+	unsigned long long time1, time2, timestart, timeend, testnumber = 0;
 
-	//////////////////////////////////////////////////////////////////////////////////////
+	timestart = get_time();
 
-	if(verbose) printf("Test #1: SHA512 on SPU\n");
-	time1 = get_time();
-	unsigned char *data = memalign(128, SHA512_BUF_SIZE);
-	if (!data)
-	{
-		printf("Failed to allocate memory for data\n");
-		return -1;
-	}
-	for (unsigned int index = 0; index < SHA512_BUF_SIZE; index += sizeof(int))
-	{
-		*((int *)&data[index]) = rand();
-	}
-	time2 = get_time();
-	printf("[PPU] Generated %uMB of data in %ums(PS3: 778ms)\n", SHA512_BUF_SIZE / (1024 * 1024), (time2 - time1));
+	DO_A_TEST("SPU Task Avalanche", test_avalanche(spurs2), 2740);
+	DO_A_TEST("PPU/SPU Ping-Pong", test_pingpong(spurs2), 3045);
+	DO_A_TEST("SPU MFC 64 Bits War", test_mfc64(spurs2, 6, 0), 3370);
+	DO_A_TEST("PPU/SPU MFC 64 Bits War", test_mfc64(spurs2, 6, 2), 4443);
 
-	time1 = get_time();
-	ret = test_sha512(spurs2, data, SHA512_BUF_SIZE);
-	if (ret != 0)
-	{
-		printf("Error test_sha512: 0x%x\n", ret);
-		return ret;
-	}
-	time2 = get_time();
+	timeend = get_time();
 
-	printf("[SPU] Finished hashing data in %ums(PS3: 3463ms)\n", (time2 - time1));
-	free(data);
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	DO_A_TEST(2, "SPU Task Avalanche", test_avalanche(spurs2), 2740);
-	DO_A_TEST(3, "PPU/SPU Ping-Pong", test_pingpong(spurs2), 3045);
-	DO_A_TEST(4, "SPU MFC 64 Bits War", test_mfc64(spurs2, 6, 0), 3370);
-	DO_A_TEST(5, "PPU/SPU MFC 64 Bits War", test_mfc64(spurs2, 6, 2), 4443);
-
-	printf("--All tests completed--\n");
+	printf("--Completed %d tests in %u ms--\n", testnumber, timeend - timestart);
 
 	free_spurs(spurs2);
 
