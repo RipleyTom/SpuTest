@@ -13,6 +13,19 @@
 
 bool verbose = false;
 
+#define DO_A_TEST(number, name, function, reference) \
+	if(verbose) printf("Test #%d: %s\n", number, name); \
+	time1 = get_time(); \
+	function; \
+	if (ret != 0) \
+	{ \
+		printf("Error %s: 0x%x\n", name, ret); \
+		return ret; \
+	} \
+	time2 = get_time(); \
+	printf("%s completed in %ums(PS3: %ums)\n", name, (time2 - time1), reference)
+
+
 unsigned long long get_time()
 {
 	sys_time_sec_t secs;
@@ -63,7 +76,6 @@ int main(int argc, char *argv[])
 
 	srand(seed);
 
-
 	CellSpurs2 *spurs2;
 	int ret = initialize_spurs(&spurs2);
 	if (ret != CELL_OK)
@@ -105,57 +117,10 @@ int main(int argc, char *argv[])
 
 	//////////////////////////////////////////////////////////////////////////////////////
 
-	if(verbose) printf("Test #2: SPU Task Avalanche\n");
-	time1 = get_time();
-	ret = test_avalanche(spurs2);
-	if (ret != 0)
-	{
-		printf("Error test_avalanche: 0x%x\n", ret);
-		return ret;
-	}
-	time2 = get_time();
-	printf("[SPU] Avalanche completed in %ums(PS3: 2740ms)\n", (time2 - time1));
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	if(verbose) printf("Test #3: SPU/PPU Ping-Pong\n");
-	time1 = get_time();
-	ret = test_pingpong(spurs2);
-	if (ret != 0)
-	{
-		printf("Error test_pingpong: 0x%x\n", ret);
-		return ret;
-	}
-	time2 = get_time();
-	printf("[SPU] SPU/PPU Ping-Pong completed in %ums(PS3: 3045ms)\n", (time2 - time1));
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	if(verbose) printf("Test #4: SPU MFC 64 bits war\n");
-	time1 = get_time();
-	ret = test_mfc64(spurs2, 6, 0);
-	if (ret != 0)
-	{
-		printf("Error test_mfc64(1): 0x%x\n", ret);
-		return ret;
-	}
-	time2 = get_time();
-	printf("[SPU] SPU MFC 64 bits war completed in %ums(PS3: 3370ms)\n", (time2 - time1));
-
-	//////////////////////////////////////////////////////////////////////////////////////
-
-	if(verbose) printf("Test #5: PPU/SPU MFC 64 Bits War\n");
-	time1 = get_time();
-	ret = test_mfc64(spurs2, 6, 2);
-	if (ret != 0)
-	{
-		printf("Error test_mfc64(2): 0x%x\n", ret);
-		return ret;
-	}
-	time2 = get_time();
-	printf("[SPU] PPU/SPU MFC 64 Bits War completed in %ums(PS3: 4443ms)\n", (time2 - time1));
-
-	//////////////////////////////////////////////////////////////////////////////////////
+	DO_A_TEST(2, "SPU Task Avalanche", test_avalanche(spurs2), 2740);
+	DO_A_TEST(3, "PPU/SPU Ping-Pong", test_pingpong(spurs2), 3045);
+	DO_A_TEST(4, "SPU MFC 64 Bits War", test_mfc64(spurs2, 6, 0), 3370);
+	DO_A_TEST(5, "PPU/SPU MFC 64 Bits War", test_mfc64(spurs2, 6, 2), 4443);
 
 	printf("--All tests completed--\n");
 
