@@ -13,7 +13,8 @@
 bool verbose = false;
 
 #define DO_A_TEST(name, function, reference) \
-	if(verbose) printf("Test #%d: %s\n", ++testnumber, name); \
+	testnumber++; \
+	if(verbose) printf("Test #%d: %s\n", testnumber, name); \
 	time1 = get_time(); \
 	function; \
 	if (ret != 0) \
