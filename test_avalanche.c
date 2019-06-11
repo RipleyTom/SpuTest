@@ -60,7 +60,7 @@ int test_avalanche(CellSpurs2* spurs2)
 		spu_data[index] = memalign(128, spu_size);
 		memcpy(spu_data[index], spu_src, spu_size);
 		*((int *)(spu_data[index] + offset_patch)) = index;
-		arg[index].u32[0] = (uint32_t)rand();
+		arg[index].u32[0] = (index + 1);
 	}
 
 	int avalanche_result = 0;

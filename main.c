@@ -7,10 +7,7 @@
 #include "test_avalanche.h"
 #include "test_pingpong.h"
 #include "test_mfc64.h"
-
-#define SHA512_BUF_SIZE        128 * 1024 * 1024
-
-bool verbose = false;
+#include "test_spu_inst.h"
 
 #define DO_A_TEST(name, function, reference) \
 	testnumber++; \
@@ -23,10 +20,15 @@ bool verbose = false;
 		return ret; \
 	} \
 	time2 = get_time(); \
-	printf("%s completed in %u ms(PS3: %u ms)\n", name, (time2 - time1), reference)
+	printf("%s completed in %llu ms (PS3: %u ms)\n", name, (time2 - time1), reference)
 
 
-unsigned long long get_time()
+extern const CellSpursTaskBinInfo _binary_task_task_spuint_elf_taskbininfo;
+extern const CellSpursTaskBinInfo _binary_task_task_spufloat_elf_taskbininfo;
+
+bool verbose = false;
+
+uint64_t get_time()
 {
 	sys_time_sec_t secs;
 	sys_time_nsec_t nsecs;
@@ -36,13 +38,13 @@ unsigned long long get_time()
 
 int main(int argc, char *argv[])
 {
-	printf("SPU Test v0.5.2 by GalCiv\n");
+	printf("SPU Test v0.6 by GalCiv\n");
 
 	unsigned int seed = 12345678;
 
-	for(int index = 1; index < argc; index++)
+	for (int index = 1; index < argc; index++)
 	{
-		if(strcmp(argv[index], "-h") == 0)
+		if (strcmp(argv[index], "-h") == 0)
 		{
 			printf("Usage:\n");
 			printf("%s <-s seed> <-v>\n", argv[0]);
@@ -51,16 +53,16 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 
-		if(strcmp(argv[index], "-v") == 0)
+		if (strcmp(argv[index], "-v") == 0)
 		{
 			printf("Verbose mode on\n");
 			verbose = true;
 			continue;
 		}
 
-		if(strcmp(argv[index], "-s") == 0)
+		if (strcmp(argv[index], "-s") == 0)
 		{
-			if((index + 1) >= argc)
+			if ((index + 1) >= argc)
 			{
 				printf("-s need a number for the seed\n");
 				return -1;
@@ -68,7 +70,7 @@ int main(int argc, char *argv[])
 
 			index++;
 
-			seed = atoi(argv[index]);
+			seed = (unsigned int)atoi(argv[index]);
 			printf("Using seed %u\n", seed);
 			continue;
 		}
@@ -84,7 +86,8 @@ int main(int argc, char *argv[])
 		return ret;
 	}
 
-	unsigned long long time1, time2, timestart, timeend, testnumber = 0;
+	uint64_t time1, time2, timestart, timeend;
+	uint32_t testnumber = 0;
 
 	timestart = get_time();
 
@@ -92,6 +95,8 @@ int main(int argc, char *argv[])
 	DO_A_TEST("PPU/SPU Ping-Pong", test_pingpong(spurs2), 3045);
 	DO_A_TEST("SPU MFC 64 Bits War", test_mfc64(spurs2, 6, 0), 3370);
 	DO_A_TEST("PPU/SPU MFC 64 Bits War", test_mfc64(spurs2, 6, 2), 4443);
+	DO_A_TEST("SPU Integer Perf", test_spu_inst(spurs2, &_binary_task_task_spuint_elf_taskbininfo), 8666);
+	DO_A_TEST("SPU Float Perf", test_spu_inst(spurs2, &_binary_task_task_spufloat_elf_taskbininfo), 2379);
 
 	timeend = get_time();
 
