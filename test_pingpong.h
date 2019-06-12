@@ -1,3 +1,3 @@
 #pragma once
 
-int test_pingpong(CellSpurs2* spurs2);
+int test_pingpong(CellSpurs2 *spurs2);

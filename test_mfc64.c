@@ -9,7 +9,7 @@
 
 extern const CellSpursTaskBinInfo _binary_task_task_mfc64_elf_taskbininfo;
 
-static uint64_t atomic_counter __attribute__ ((aligned(128)));
+static uint64_t atomic_counter __attribute__((aligned(128)));
 
 void ppu_mfc64_entry(uint64_t arg)
 {
@@ -21,7 +21,7 @@ void ppu_mfc64_entry(uint64_t arg)
 	sys_ppu_thread_exit(0);
 }
 
-int test_mfc64(CellSpurs2* spurs2, unsigned int num_spu, unsigned int num_ppu)
+int test_mfc64(CellSpurs2 *spurs2, unsigned int num_spu, unsigned int num_ppu)
 {
 	int ret;
 
@@ -52,7 +52,7 @@ int test_mfc64(CellSpurs2* spurs2, unsigned int num_spu, unsigned int num_ppu)
 	}
 
 	sys_ppu_thread_t ppu_ids[num_ppu];
-	for (int index = 0; index < num_ppu; index ++)
+	for (int index = 0; index < num_ppu; index++)
 	{
 		ret = sys_ppu_thread_create(&ppu_ids[index], ppu_mfc64_entry, 0, 1000, 0x1000, SYS_PPU_THREAD_CREATE_JOINABLE, "PPU MFC 64 Bit");
 		if (ret != 0)

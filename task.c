@@ -17,4 +17,3 @@ int cellSpursTaskMain(qword argTask, uint64_t argTaskset)
 
 	return x;
 }
-

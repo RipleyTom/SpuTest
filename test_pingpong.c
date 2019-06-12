@@ -9,9 +9,9 @@
 
 extern const CellSpursTaskBinInfo _binary_task_task_pingpong_elf_taskbininfo;
 
-static CellSpursEventFlag event_flag __attribute__ ((aligned(CELL_SPURS_EVENT_FLAG_ALIGN)));
+static CellSpursEventFlag event_flag __attribute__((aligned(CELL_SPURS_EVENT_FLAG_ALIGN)));
 
-int test_pingpong(CellSpurs2* spurs2)
+int test_pingpong(CellSpurs2 *spurs2)
 {
 	int ret;
 

@@ -8,7 +8,7 @@
 
 #define NUM_SPU 6
 
-int test_spu_inst(CellSpurs2* spurs2, const CellSpursTaskBinInfo *program)
+int test_spu_inst(CellSpurs2 *spurs2, const CellSpursTaskBinInfo *program)
 {
 	int ret;
 

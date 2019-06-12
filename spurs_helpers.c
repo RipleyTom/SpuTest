@@ -4,10 +4,9 @@
 #include <sys/spu_initialize.h>
 #include <cell/spurs.h>
 
-
-#define NUM_OF_SPU             6
-#define SPU_SPURS_PRIORITY     100
-#define PPU_SPURS_PRIORITY     500
+#define NUM_OF_SPU 6
+#define SPU_SPURS_PRIORITY 100
+#define PPU_SPURS_PRIORITY 500
 
 int initialize_spurs(CellSpurs2 **spurs2)
 {
@@ -25,7 +24,7 @@ int initialize_spurs(CellSpurs2 **spurs2)
 		return ret;
 	}
 
-	*spurs2 = (CellSpurs2*)memalign(128, sizeof(CellSpurs2));
+	*spurs2 = (CellSpurs2 *)memalign(128, sizeof(CellSpurs2));
 	if (!(*spurs2))
 	{
 		printf("Failed to allocate memory for CellSpurs2\n");
@@ -50,9 +49,9 @@ int initialize_spurs(CellSpurs2 **spurs2)
 	return 0;
 }
 
-int initialize_taskset(CellSpurs2* spurs2, CellSpursTaskset2** taskset, uint64_t arg_value) 
+int initialize_taskset(CellSpurs2 *spurs2, CellSpursTaskset2 **taskset, uint64_t arg_value)
 {
-	*taskset = (CellSpursTaskset2*)memalign(128, sizeof(CellSpursTaskset2));
+	*taskset = (CellSpursTaskset2 *)memalign(128, sizeof(CellSpursTaskset2));
 
 	if (!(*taskset))
 	{
@@ -82,7 +81,7 @@ int free_spurs(CellSpurs2 *spurs2)
 	free(spurs2);
 }
 
-int free_taskset(CellSpursTaskset2* taskset)
+int free_taskset(CellSpursTaskset2 *taskset)
 {
 	int ret = cellSpursDestroyTaskset2(taskset);
 	if (ret != 0)
