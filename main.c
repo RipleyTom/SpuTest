@@ -8,6 +8,7 @@
 #include "test_pingpong.h"
 #include "test_mfc64.h"
 #include "test_spu_inst.h"
+#include "test_spinlock.h"
 
 #define DO_A_TEST(name, function, reference)                                                \
 	{                                                                                       \
@@ -25,7 +26,7 @@
 		printf("%s completed in %llu ms (PS3: %u ms)\n", name, (time2 - time1), reference); \
 	}
 
-#define NUM_TESTS 6
+#define NUM_TESTS 7
 
 enum tests
 {
@@ -34,7 +35,8 @@ enum tests
 	TEST_SPU64WAR,
 	TEST_PPUSPU64WAR,
 	TEST_SPUINTEGER,
-	TEST_SPUFLOAT
+	TEST_SPUFLOAT,
+	TEST_SPUSPINLOCK
 };
 
 #define AVALANCHE_NAME "SPU Task Avalanche"
@@ -43,6 +45,7 @@ enum tests
 #define PPUSPU64WAR_NAME "PPU/SPU MFC 64 Bits War"
 #define SPUINTEGER_NAME "SPU Integer Perf"
 #define SPUFLOAT_NAME "SPU Float Perf"
+#define SPUSPINLOCK_NAME "SPU SpinLock"
 
 typedef struct
 {
@@ -57,7 +60,8 @@ const arg_test arg_conv[NUM_TESTS] = {
 	{'S', TEST_SPU64WAR, SPU64WAR_NAME},
 	{'W', TEST_PPUSPU64WAR, PPUSPU64WAR_NAME},
 	{'I', TEST_SPUINTEGER, SPUINTEGER_NAME},
-	{'F', TEST_SPUFLOAT, SPUFLOAT_NAME}};
+	{'F', TEST_SPUFLOAT, SPUFLOAT_NAME},
+	{'L', TEST_SPUSPINLOCK, SPUSPINLOCK_NAME}};
 
 extern const CellSpursTaskBinInfo _binary_task_task_spuint_elf_taskbininfo;
 extern const CellSpursTaskBinInfo _binary_task_task_spufloat_elf_taskbininfo;
@@ -74,7 +78,7 @@ uint64_t get_time()
 
 int main(int argc, char *argv[])
 {
-	printf("SPU Test v0.6.1 by GalCiv\n");
+	printf("SPU Test v0.7.0 by GalCiv\n");
 
 	unsigned int seed = 12345678;
 	unsigned int repeat = 1;
@@ -191,6 +195,8 @@ int main(int argc, char *argv[])
 			DO_A_TEST(SPUINTEGER_NAME, test_spu_inst(spurs2, &_binary_task_task_spuint_elf_taskbininfo), 8666);
 		if (tests_to_run[TEST_SPUFLOAT])
 			DO_A_TEST(SPUFLOAT_NAME, test_spu_inst(spurs2, &_binary_task_task_spufloat_elf_taskbininfo), 2379);
+		if (tests_to_run[TEST_SPUSPINLOCK])
+			DO_A_TEST(SPUSPINLOCK_NAME, test_spuspinlock(spurs2), 4409);
 	}
 
 	timeend = get_time();
