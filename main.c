@@ -27,7 +27,7 @@
 		printf("%s completed in %llu ms (PS3: %u ms)\n", name, (time2 - time1), reference); \
 	}
 
-#define NUM_TESTS 9
+#define NUM_TESTS 10
 
 enum tests
 {
@@ -40,6 +40,7 @@ enum tests
 	TEST_SPUSPINLOCK,
 	TEST_SPUPUTLLUC,
 	TEST_SPUPUTLLC,
+	TEST_SPUPUT,
 };
 
 #define AVALANCHE_NAME "SPU Task Avalanche"
@@ -51,6 +52,7 @@ enum tests
 #define SPUSPINLOCK_NAME "SPU SpinLock"
 #define SPUPUTLLUC_NAME "PUTLLUC Perf"
 #define SPUPUTLLC_NAME "PUTLLC Perf"
+#define SPUPUT_NAME "PUT Perf"
 
 typedef struct
 {
@@ -68,13 +70,15 @@ const arg_test arg_conv[NUM_TESTS] = {
 	{'F', TEST_SPUFLOAT, SPUFLOAT_NAME},
 	{'L', TEST_SPUSPINLOCK, SPUSPINLOCK_NAME},
 	{'U', TEST_SPUPUTLLUC, SPUPUTLLUC_NAME},
-	{'T', TEST_SPUPUTLLC, SPUPUTLLC_NAME}};
+	{'T', TEST_SPUPUTLLC, SPUPUTLLC_NAME},
+	{'R', TEST_SPUPUT, SPUPUT_NAME}};
 
 extern const CellSpursTaskBinInfo _binary_task_task_spuint_elf_taskbininfo;
 extern const CellSpursTaskBinInfo _binary_task_task_spufloat_elf_taskbininfo;
 
 extern const CellSpursTaskBinInfo _binary_task_task_putlluc_elf_taskbininfo;
 extern const CellSpursTaskBinInfo _binary_task_task_putllc_elf_taskbininfo;
+extern const CellSpursTaskBinInfo _binary_task_task_put_elf_taskbininfo;
 
 bool verbose = false;
 
@@ -88,7 +92,7 @@ uint64_t get_time()
 
 int main(int argc, char *argv[])
 {
-	printf("SPU Test v0.9.0 by GalCiv\n");
+	printf("SPU Test v1.0.0 by GalCiv\n");
 
 	unsigned int seed = 12345678;
 	unsigned int repeat = 1;
@@ -211,6 +215,8 @@ int main(int argc, char *argv[])
 			DO_A_TEST(SPUPUTLLUC_NAME, test_block(spurs2, &_binary_task_task_putlluc_elf_taskbininfo), 3853);
 		if (tests_to_run[TEST_SPUPUTLLC])
 			DO_A_TEST(SPUPUTLLC_NAME, test_block(spurs2, &_binary_task_task_putllc_elf_taskbininfo), 3364);
+		if (tests_to_run[TEST_SPUPUT])
+			DO_A_TEST(SPUPUT_NAME, test_block(spurs2, &_binary_task_task_put_elf_taskbininfo), 3984);
 	}
 
 	timeend = get_time();
