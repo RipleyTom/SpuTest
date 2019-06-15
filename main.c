@@ -9,6 +9,7 @@
 #include "test_mfc64.h"
 #include "test_spu_inst.h"
 #include "test_spinlock.h"
+#include "test_block.h"
 
 #define DO_A_TEST(name, function, reference)                                                \
 	{                                                                                       \
@@ -26,7 +27,7 @@
 		printf("%s completed in %llu ms (PS3: %u ms)\n", name, (time2 - time1), reference); \
 	}
 
-#define NUM_TESTS 7
+#define NUM_TESTS 9
 
 enum tests
 {
@@ -36,7 +37,9 @@ enum tests
 	TEST_PPUSPU64WAR,
 	TEST_SPUINTEGER,
 	TEST_SPUFLOAT,
-	TEST_SPUSPINLOCK
+	TEST_SPUSPINLOCK,
+	TEST_SPUPUTLLUC,
+	TEST_SPUPUTLLC,
 };
 
 #define AVALANCHE_NAME "SPU Task Avalanche"
@@ -46,6 +49,8 @@ enum tests
 #define SPUINTEGER_NAME "SPU Integer Perf"
 #define SPUFLOAT_NAME "SPU Float Perf"
 #define SPUSPINLOCK_NAME "SPU SpinLock"
+#define SPUPUTLLUC_NAME "PUTLLUC Perf"
+#define SPUPUTLLC_NAME "PUTLLC Perf"
 
 typedef struct
 {
@@ -61,10 +66,15 @@ const arg_test arg_conv[NUM_TESTS] = {
 	{'W', TEST_PPUSPU64WAR, PPUSPU64WAR_NAME},
 	{'I', TEST_SPUINTEGER, SPUINTEGER_NAME},
 	{'F', TEST_SPUFLOAT, SPUFLOAT_NAME},
-	{'L', TEST_SPUSPINLOCK, SPUSPINLOCK_NAME}};
+	{'L', TEST_SPUSPINLOCK, SPUSPINLOCK_NAME},
+	{'U', TEST_SPUPUTLLUC, SPUPUTLLUC_NAME},
+	{'T', TEST_SPUPUTLLC, SPUPUTLLC_NAME}};
 
 extern const CellSpursTaskBinInfo _binary_task_task_spuint_elf_taskbininfo;
 extern const CellSpursTaskBinInfo _binary_task_task_spufloat_elf_taskbininfo;
+
+extern const CellSpursTaskBinInfo _binary_task_task_putlluc_elf_taskbininfo;
+extern const CellSpursTaskBinInfo _binary_task_task_putllc_elf_taskbininfo;
 
 bool verbose = false;
 
@@ -78,7 +88,7 @@ uint64_t get_time()
 
 int main(int argc, char *argv[])
 {
-	printf("SPU Test v0.7.0 by GalCiv\n");
+	printf("SPU Test v0.9.0 by GalCiv\n");
 
 	unsigned int seed = 12345678;
 	unsigned int repeat = 1;
@@ -197,6 +207,10 @@ int main(int argc, char *argv[])
 			DO_A_TEST(SPUFLOAT_NAME, test_spu_inst(spurs2, &_binary_task_task_spufloat_elf_taskbininfo), 2379);
 		if (tests_to_run[TEST_SPUSPINLOCK])
 			DO_A_TEST(SPUSPINLOCK_NAME, test_spuspinlock(spurs2), 4409);
+		if (tests_to_run[TEST_SPUPUTLLUC])
+			DO_A_TEST(SPUPUTLLUC_NAME, test_block(spurs2, &_binary_task_task_putlluc_elf_taskbininfo), 3853);
+		if (tests_to_run[TEST_SPUPUTLLC])
+			DO_A_TEST(SPUPUTLLC_NAME, test_block(spurs2, &_binary_task_task_putllc_elf_taskbininfo), 3364);
 	}
 
 	timeend = get_time();
