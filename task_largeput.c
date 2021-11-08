@@ -6,7 +6,7 @@
 
 CELL_SPU_LS_PARAM(16 * 1024, 16 * 1024);
 
-#define NUM_LARGE_PUTC 1000000
+#define NUM_LARGE_PUTC 10000000
 
 uint8_t ls_buf[16384] __attribute__((aligned(128)));
 

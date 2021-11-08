@@ -97,7 +97,7 @@ uint64_t get_time()
 
 int main(int argc, char *argv[])
 {
-	printf("SPU Test v1.1.0 by GalCiv\n");
+	printf("SPU Test v1.1.1 by GalCiv\n");
 
 	unsigned int seed = 12345678;
 	unsigned int repeat = 1;
