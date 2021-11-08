@@ -97,7 +97,7 @@ uint64_t get_time()
 
 int main(int argc, char *argv[])
 {
-	printf("SPU Test v1.1.0 by GalCiv\n");
+	printf("SPU Test v1.1.2 by GalCiv\n");
 
 	unsigned int seed = 12345678;
 	unsigned int repeat = 1;
@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
 		if (tests_to_run[TEST_SPUPUT])
 			DO_A_TEST(SPUPUT_NAME, test_block(spurs2, &_binary_task_task_put_elf_taskbininfo), 3984);
 		if (tests_to_run[TEST_SPULARGEPUT])
-			DO_A_TEST(SPULARGEPUT_NAME, test_largeblock(spurs2, &_binary_task_task_largeput_elf_taskbininfo), 0);
+			DO_A_TEST(SPULARGEPUT_NAME, test_largeblock(spurs2, &_binary_task_task_largeput_elf_taskbininfo), 4454);
 	}
 
 	timeend = get_time();
