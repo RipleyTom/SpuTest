@@ -55,7 +55,7 @@ enum tests
 #define SPUPUTLLUC_NAME "PUTLLUC Perf"
 #define SPUPUTLLC_NAME "PUTLLC Perf"
 #define SPUPUT_NAME "PUT Perf"
-#define SPULARGEPUT_NAME "Large Put Perf"
+#define SPULARGEPUT_NAME "Large PUT Perf"
 
 typedef struct
 {
