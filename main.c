@@ -28,7 +28,7 @@
 		printf("%s completed in %llu ms (PS3: %u ms)\n", name, (time2 - time1), reference); \
 	}
 
-#define NUM_TESTS 11
+#define NUM_TESTS 12
 
 enum tests
 {
@@ -43,6 +43,7 @@ enum tests
 	TEST_SPUPUTLLC,
 	TEST_SPUPUT,
 	TEST_SPULARGEPUT,
+	TEST_SPUREACC,
 };
 
 #define AVALANCHE_NAME "SPU Task Avalanche"
@@ -56,6 +57,7 @@ enum tests
 #define SPUPUTLLC_NAME "PUTLLC Perf"
 #define SPUPUT_NAME "PUT Perf"
 #define SPULARGEPUT_NAME "Large PUT Perf"
+#define SPUREACC_NAME "SPU Reciprocal Accurate"
 
 typedef struct
 {
@@ -75,7 +77,8 @@ const arg_test arg_conv[NUM_TESTS] = {
 	{'U', TEST_SPUPUTLLUC, SPUPUTLLUC_NAME},
 	{'T', TEST_SPUPUTLLC, SPUPUTLLC_NAME},
 	{'R', TEST_SPUPUT, SPUPUT_NAME},
-	{'G', TEST_SPULARGEPUT, SPULARGEPUT_NAME}};
+	{'G', TEST_SPULARGEPUT, SPULARGEPUT_NAME},
+	{'E', TEST_SPUREACC, SPUREACC_NAME}};
 
 extern const CellSpursTaskBinInfo _binary_task_task_spuint_elf_taskbininfo;
 extern const CellSpursTaskBinInfo _binary_task_task_spufloat_elf_taskbininfo;
@@ -84,6 +87,8 @@ extern const CellSpursTaskBinInfo _binary_task_task_putlluc_elf_taskbininfo;
 extern const CellSpursTaskBinInfo _binary_task_task_putllc_elf_taskbininfo;
 extern const CellSpursTaskBinInfo _binary_task_task_put_elf_taskbininfo;
 extern const CellSpursTaskBinInfo _binary_task_task_largeput_elf_taskbininfo;
+
+extern const CellSpursTaskBinInfo _binary_task_task_reacc_elf_taskbininfo;
 
 bool verbose = false;
 
@@ -97,7 +102,7 @@ uint64_t get_time()
 
 int main(int argc, char *argv[])
 {
-	printf("SPU Test v1.1.2 by GalCiv\n");
+	printf("SPU Test v1.2.1 by GalCiv\n");
 
 	unsigned int seed = 12345678;
 	unsigned int repeat = 1;
@@ -221,9 +226,11 @@ int main(int argc, char *argv[])
 		if (tests_to_run[TEST_SPUPUTLLC])
 			DO_A_TEST(SPUPUTLLC_NAME, test_block(spurs2, &_binary_task_task_putllc_elf_taskbininfo), 3364);
 		if (tests_to_run[TEST_SPUPUT])
-			DO_A_TEST(SPUPUT_NAME, test_block(spurs2, &_binary_task_task_put_elf_taskbininfo), 3984);
+			DO_A_TEST(SPUPUT_NAME, test_block(spurs2, &_binary_task_task_put_elf_taskbininfo), 4567);
 		if (tests_to_run[TEST_SPULARGEPUT])
-			DO_A_TEST(SPULARGEPUT_NAME, test_largeblock(spurs2, &_binary_task_task_largeput_elf_taskbininfo), 4454);
+			DO_A_TEST(SPULARGEPUT_NAME, test_largeblock(spurs2, &_binary_task_task_largeput_elf_taskbininfo), 4423);
+		if (tests_to_run[TEST_SPUREACC])
+			DO_A_TEST(SPUREACC_NAME, test_spu_inst(spurs2, &_binary_task_task_reacc_elf_taskbininfo), 6125);
 	}
 
 	timeend = get_time();

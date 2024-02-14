@@ -9,6 +9,7 @@ spu-lv2-gcc -O3 -c task_putlluc.c -o task_putlluc.o
 spu-lv2-gcc -O3 -c task_putllc.c -o task_putllc.o
 spu-lv2-gcc -O3 -c task_put.c -o task_put.o
 spu-lv2-gcc -O3 -c task_largeput.c -o task_largeput.o
+spu-lv2-gcc -O3 -c task_reacc.c -o task_reacc.o
 
 spu-lv2-gcc -O3 -mspurs-task task.o -o task.elf
 spu-lv2-gcc -O3 -mspurs-task task_pingpong.o -o task_pingpong.elf
@@ -20,6 +21,7 @@ spu-lv2-gcc -O3 -mspurs-task task_putlluc.o -ldma -o task_putlluc.elf
 spu-lv2-gcc -O3 -mspurs-task task_putllc.o -ldma -o task_putllc.elf
 spu-lv2-gcc -O3 -mspurs-task task_put.o -ldma -o task_put.elf
 spu-lv2-gcc -O3 -mspurs-task task_largeput.o -ldma -o task_largeput.elf
+spu-lv2-gcc -O3 -mspurs-task task_reacc.o -o task_reacc.elf
 
 spu_elf-to-ppu_obj task.elf task.ppu.o
 spu_elf-to-ppu_obj task_pingpong.elf task_pingpong.ppu.o
@@ -31,6 +33,7 @@ spu_elf-to-ppu_obj task_putlluc.elf task_putlluc.ppu.o
 spu_elf-to-ppu_obj task_putllc.elf task_putllc.ppu.o
 spu_elf-to-ppu_obj task_put.elf task_put.ppu.o
 spu_elf-to-ppu_obj task_largeput.elf task_largeput.ppu.o
+spu_elf-to-ppu_obj task_reacc.elf task_reacc.ppu.o
 
 ppu-lv2-gcc -O3 -c spurs_helpers.c -o spurs_helpers.o
 ppu-lv2-gcc -O3 -c test_avalanche.c -o test_avalanche.o
@@ -43,5 +46,5 @@ ppu-lv2-gcc -O3 -c test_largeblock.c -o test_largeblock.o
 ppu-lv2-gcc -O3 -c main.c -o main.o
 
 
-ppu-lv2-gcc -O3 spurs_helpers.o test_avalanche.o test_pingpong.o test_mfc64.o test_spu_inst.o test_spinlock.o test_block.o test_largeblock.o main.o task.ppu.o task_pingpong.ppu.o task_mfc64.ppu.o task_spuint.ppu.o task_spufloat.ppu.o task_spuspinlock.ppu.o task_putlluc.ppu.o task_putllc.ppu.o task_put.ppu.o task_largeput.ppu.o -lsysmodule_stub -lspurs_stub -o spurs_test.elf
+ppu-lv2-gcc -O3 spurs_helpers.o test_avalanche.o test_pingpong.o test_mfc64.o test_spu_inst.o test_spinlock.o test_block.o test_largeblock.o main.o task.ppu.o task_pingpong.ppu.o task_mfc64.ppu.o task_spuint.ppu.o task_spufloat.ppu.o task_spuspinlock.ppu.o task_putlluc.ppu.o task_putllc.ppu.o task_put.ppu.o task_largeput.ppu.o task_reacc.ppu.o -lsysmodule_stub -lspurs_stub -o spurs_test.elf
 make_fself spurs_test.elf spurs_test.self
