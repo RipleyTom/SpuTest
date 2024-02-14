@@ -8,7 +8,7 @@
 
 #define NUM_SPU 6
 
-unsigned char largebuf[16384] __attribute__((aligned(128)));
+unsigned char largebuf[16384 * NUM_SPU] __attribute__((aligned(128)));
 
 int test_largeblock(CellSpurs2 *spurs2, const CellSpursTaskBinInfo *program)
 {
@@ -31,7 +31,7 @@ int test_largeblock(CellSpurs2 *spurs2, const CellSpursTaskBinInfo *program)
         ctx[index] = memalign(128, program->sizeContext);
         for (int subdex = 0; subdex < 4; subdex++)
         {
-            args[index].u32[subdex] = (index * 10000000) + subdex;
+            args[index].u32[subdex] = index + (subdex * 16);
         }
 
         ret = cellSpursCreateTask2WithBinInfo(taskset, &tids[index], program, &args[index], ctx[index], NULL, NULL);
